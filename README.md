@@ -1,4 +1,3 @@
-# WeChatRedbag
 ###前言：
 记得好像是16年年初的时候[蒸米](https://github.com/zhengmin1989)就发过一篇 [iOS冰与火之歌(作者:蒸米)](https://github.com/zhengmin1989/iOS_ICE_AND_FIRE)讲通过hook微信的红包相关方法来实现自动抢红包。当时就跟着试了不过由于手上没有越狱机和开发者证书（主要是经验不够），就一直卡在红包相关方法和重签名那里了，最近突然又想起来并且在看了几篇博客后又跟着复习了一遍，终于把自动抢红包功能实现了。
 
@@ -41,7 +40,6 @@
 ####2.配置环境dylib
 
 Xcode8 中是不支持创建dylib工程的，所以需要下载安装iOSOpenDev，安装完成后Xcode8环境会提示安装iOSOpenDev失败:
-
 
 [一步一步实现iOS微信自动抢红包(非越狱)](http://www.jianshu.com/p/189afbe3b429) 中的解决办法是参考[iOSOpenDev安装问题](http://www.tqcto.com/article/software/14553.html)，重新打开Xcode，在新建项目的选项中即可看到iOSOpenDev选项了。
 
@@ -96,10 +94,9 @@ __attribute__((constructor)) static void entry()
 }
 项目的全部代码，笔者已放入Github中。
 完成好具体实现逻辑后，就可以顺利生成dylib了。
-
 ````
-写好代码后，run一下，会在工程目录的Product目录下生成我们制作的libautogetRedEnv.dylib文件
 
+写好代码后，run一下，会在工程目录的Product目录下生成我们制作的libautogetRedEnv.dylib文件
 ![Product目录下生成的libautogetRedEnv.dylib](http://upload-images.jianshu.io/upload_images/870531-18c211424b2078e7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ####4.注入libautogetRedEnv.dylib
@@ -108,7 +105,6 @@ __attribute__((constructor)) static void entry()
 ![需要用到的文件](http://upload-images.jianshu.io/upload_images/870531-9037b5506bba000b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 切换到该目录下执行：**./yololib WeChat.app/WeChat libautoGetRedEnv.dylib**
-
 ````
 dsa:Demo xxx$ ./yololib WeChat.app/WeChat libautoGetRedEnv.dylib
 2017-02-03 17:22:25.685 yololib[5070:410411] dylib path @executable_path/libautoGetRedEnv.dylib
@@ -134,7 +130,10 @@ Reading binary: WeChat.app/WeChat
 完成libautoGetRedEnv.dylib 的注入
 
 ####5.重签名
-重签名部分参考 [非越狱环境下从应用重签名到微信上加载Cycript](http://www.jianshu.com/p/262b9849fa10)，直接使用作者提供的 AppResign脚本进行签名：（如果提示Permission denied  ，需要执行一下 chomd 777 AppResign ）
+
+**重签名之前，需要将WeChat.app里面的Watch文件夹、PlugIns文件夹一起删去，同时将libautoGetRedEnv.dylib 拷贝到WeChat文件中**
+
+重签名部分参考 [非越狱环境下从应用重签名到微信上加载Cycript](http://www.jianshu.com/p/262b9849fa10)，直接使用作者提供的 AppResign脚本进行签名：（如果提示Permission denied  ，需要执行一下 chmod 777 AppResign ）
 
 ````
 dsa:Demo xxx$ ./AppResign WeChat.app DYCRedWechat.ipa
@@ -176,7 +175,6 @@ Packaging IPA
 Done, output at DYCRedWechat.ipa
 ````
 生成的ipa文件通过iTunes装到手机上就OK了：
-
 ![DYCRedWechat.ipa](http://upload-images.jianshu.io/upload_images/870531-26844b4ffda3c728.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ###最后
