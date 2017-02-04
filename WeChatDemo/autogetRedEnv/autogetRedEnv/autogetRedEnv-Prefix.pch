@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'autogetRedEnv' target in the 'autogetRedEnv' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
